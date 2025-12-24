@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SMGPUBL℠ | Trap Kits & Licensing</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#0b0c10; --panel:#111319; --ink:#eaf2ff; --muted:#9fb3c8;
+  --primary:#00ffcc; --accent:#c24bff; --stroke:#1e2333;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.container{max-width:1100px;margin:auto;padding:48px 24px}
+h1{font-size:42px;margin-bottom:12px}
+h2{margin-bottom:10px}
+.small{font-size:14px;color:var(--muted)}
+.center{text-align:center}
+.card{background:var(--panel);padding:24px;border-radius:var(--radius)}
+.btn{background:var(--primary);color:#000;padding:14px 24px;
+     border:none;font-weight:700;border-radius:8px;cursor:pointer}
+input,select{width:100%;padding:12px;margin-bottom:10px;
+             background:#0e111a;color:#fff;border:1px solid var(--stroke);
+             border-radius:6px}
+.hidden{display:none}
+footer{text-align:center;margin-top:80px;font-size:14px;color:#aaa}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- HERO -->
+<section class="center">
+  <h1>Trap Kits. Licenses. Monetization.</h1>
+  <p class="small">Built for creators & fans.</p>
+  <button class="btn" onclick="auth.scrollIntoView()">Get Started</button>
+</section>
+
+<!-- PRODUCT -->
+<section class="card" style="margin-top:60px">
+  <h2>Trap Demo Kit</h2>
+  <p class="small">MIDI • Drum Rack • 140 BPM • DAW-Ready</p>
+  <h3 style="color:var(--primary);margin:12px 0">$29+</h3>
+  <button class="btn" onclick="openModal()">Buy License</button>
+</section>
+
+<!-- AUTH -->
+<section id="auth" class="card center"
+style="margin-top:60px;max-width:420px;margin-inline:auto">
+
+<h2>Join SMGPUBL℠</h2>
+
+<form id="signupForm" onsubmit="event.preventDefault();signup()">
+  <input id="suEmail" type="email" placeholder="Email" required>
+  <input id="suPass" type="password" placeholder="Password" required>
+  <select id="suRole">
+    <option value="fan">Fan</option>
+    <option value="creator">Creator</option>
+  </select>
+  <button class="btn" style="width:100%">Sign Up</button>
+</form>
+
+<p class="small">Already a user?
+  <a href="#" style="color:var(--primary)" onclick="toggle()">Login</a>
+</p>
+
+<form id="loginForm" class="hidden" onsubmit="event.preventDefault();login()">
+  <input id="liEmail" type="email" placeholder="Email" required>
+  <input id="liPass" type="password" placeholder="Password" required>
+  <button class="btn" style="width:100%">Login</button>
+</form>
+</section>
+
+<!-- SUBSCRIBE -->
+<section class="center" style="margin-top:60px">
+  <h2>Email Drops & Deals</h2>
+  <p class="small">Early access to kits & exclusives</p>
+  <form onsubmit="event.preventDefault();subscribe()">
+    <input id="subEmail" type="email" placeholder="Email" required
+           style="max-width:280px">
+    <button class="btn">Subscribe</button>
+  </form>
+</section>
+
+<footer>
+© 2025 SMGPUBL℠ · raypubl.com
+</footer>
+</div>
+
+<!-- LICENSE MODAL -->
+<div id="modal" class="hidden"
+style="position:fixed;inset:0;background:rgba(0,0,0,.7);
+display:flex;align-items:center;justify-content:center;z-index:999">
+
+<div class="card" style="max-width:400px;width:100%">
+  <h2>Buy License</h2>
+  <select id="license">
+    <option value="standard">Standard — $29</option>
+    <option value="premium">Premium — $79</option>
+  </select>
+  <input id="qty" type="number" min="1" value="1">
+  <button class="btn" style="width:100%" onclick="addToCart()">Add to Cart</button>
+  <p class="small center"><a href="#" onclick="closeModal()">Cancel</a></p>
+</div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const users = JSON.parse(localStorage.getItem("users")||"[]");
+const subs  = JSON.parse(localStorage.getItem("subs")||"[]");
+let cart    = JSON.parse(localStorage.getItem("cart")||"[]");
+
+/* ===== AUTH ===== */
+function signup(){
+  const user={email:suEmail.value,role:suRole.value};
+  users.push(user);
+  localStorage.setItem("users",JSON.stringify(users));
+  localStorage.setItem("session",JSON.stringify(user));
+  location.href="dashboard.html";
+}
+function login(){
+  const u=users.find(x=>x.email===liEmail.value);
+  if(!u){alert("User not found");return}
+  localStorage.setItem("session",JSON.stringify(u));
+  location.href="dashboard.html";
+}
+function toggle(){
+  signupForm.classList.toggle("hidden");
+  loginForm.classList.toggle("hidden");
+}
+
+/* ===== SUBSCRIBE ===== */
+function subscribe(){
+  if(!subs.includes(subEmail.value)){
+    subs.push(subEmail.value);
+    localStorage.setItem("subs",JSON.stringify(subs));
+    alert("Subscribed!");
+  }
+}
+
+/* ===== MODAL + CART ===== */
+function openModal(){modal.classList.remove("hidden")}
+function closeModal(){modal.classList.add("hidden")}
+function addToCart(){
+  cart.push({license:license.value,qty:qty.value});
+  localStorage.setItem("cart",JSON.stringify(cart));
+  alert("Added to cart");
+  closeModal();
+}
+</script>
+</body>
+</html>
